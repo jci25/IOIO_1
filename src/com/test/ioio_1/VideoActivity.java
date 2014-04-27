@@ -8,6 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -56,13 +59,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class VideoActivity extends Activity {
+public class VideoActivity extends Activity implements OnNavigationListener {
 	GoogleMap map;
 	Polyline lineTrace;
 	private boolean small = true;
@@ -75,14 +80,14 @@ public class VideoActivity extends Activity {
     WebSocketClient client;
     private XYPlot geigerPlot = null;
     private SimpleXYSeries geigerSeries = null;
-    private static final int HISTORY_SIZE = 300;            // number of points to plot in history
+    private static final int HISTORY_SIZE = 120;            // number of points to plot in history
     private InputDevice _device;
 	private Socket _sock;
 	private Thread _th;
 	private RelativeLayout video, plot;
-	private TextView _roll, _pitch, _throttle, _yaw, geiger, _mode;
+	private TextView geiger, _mode;
 	public static int mode = 0;
-	private static String[] modeNames = {"Stabilize", "Alt Hole", "Loiter", "RTL", "Land", "Sport"};
+	private static String[] modeNames = {"Stabilize", "Alt Hold", "Loiter", "RTL", "Land", "Sport"};
 	public static float[] axisValues = new float[4]; //change to [5] if using left trigger
 	
 	public int[] gamepadAxisIndices = null;
@@ -137,6 +142,19 @@ public class VideoActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_video);
+		
+		// Set up the action bar to show a dropdown list.
+		final ActionBar actionBar = getActionBar();
+		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		
+		ArrayList<String> itemList = new ArrayList<String>();
+		for(int i = 0; i < modeNames.length; i++){
+			itemList.add(modeNames[i]);
+		}
+		ArrayAdapter<String> aAdpt = new ArrayAdapter<String>(this, R.layout.spinner_list, R.id.label, itemList);
+		actionBar.setListNavigationCallbacks(aAdpt, this);
+		
 		video = (RelativeLayout) findViewById(R.id.vid_lay);
 		plot = (RelativeLayout) findViewById(R.id.graph_lay);
 		////for maps
@@ -321,10 +339,7 @@ public class VideoActivity extends Activity {
 			Log.i("SHIELD_CONTROL", deviceInfoText);
 			
 			_th = new SendSignalThread();
-			_roll = (TextView)findViewById(R.id.lblRoll);
-			_pitch = (TextView)findViewById(R.id.lblPitch);
-			_throttle = (TextView)findViewById(R.id.lblThrottle);
-			_yaw = (TextView)findViewById(R.id.lblYaw);
+			
 		}catch(Exception e){
 			Toast.makeText(this, "NO GAMEPAD FOUND", Toast.LENGTH_LONG).show();
 		}
@@ -703,7 +718,7 @@ public class VideoActivity extends Activity {
 				return adjustedValue * step + offset;
 			}
 			
-			private void sendSignal(int channel, float dc) {
+			protected void sendSignal(int channel, float dc) {
 				if (!_sock.isConnected())
 					//return;
 				try {
@@ -803,6 +818,14 @@ public class VideoActivity extends Activity {
 			}
 			
 		     super.onBackPressed();  // optional depending on your needs
+		}
+
+		@Override
+		public boolean onNavigationItemSelected(int pos, long id) {
+			// TODO Auto-generated method stub
+			mode = pos;
+			_mode.setText( modeNames[mode]);
+			return false;
 		}
 
 

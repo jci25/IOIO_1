@@ -31,16 +31,17 @@
             android:onClick="connect" 
             />
         
-         <Button
+<!--          <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/button_close"
             android:onClick="close" 
             />
+--> 
         
 	</LinearLayout>
     
-    <TextView
+<!--     <TextView
         	android:textSize="20sp"
         	android:layout_width="wrap_content"
         	android:layout_height="wrap_content"
@@ -83,5 +84,5 @@
         	android:text="@string/mode"
         	
         	/>
-
+-->
 </LinearLayout>

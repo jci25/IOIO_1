@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		
 		_editIp = (EditText) findViewById(R.id.edit_ip);
+		_editIp.setText("192.168.1.135:9999");
 		
 		Button connect = (Button) findViewById(R.id.connectB);
 		
