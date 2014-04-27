@@ -539,6 +539,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 				
 				System.out.println(mode);
 				_mode.setText(modeNames[mode]);
+				ActionBar actionBar = getActionBar();
+				actionBar.setSelectedNavigationItem(mode);
 			}
 			if (keyCode ==  KeyEvent.KEYCODE_BUTTON_Y){
 				Log.i("SHIELD_CONTROL", "Button Y is pressed");
@@ -546,6 +548,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 
 				System.out.println(mode);
 				_mode.setText( modeNames[mode]);
+				ActionBar actionBar = getActionBar();
+				actionBar.setSelectedNavigationItem(mode);
 			}
 			if (keyCode == KeyEvent.KEYCODE_BUTTON_L1)
 				Log.i("SHIELD_CONTROL", "Button L1 is pressed");
