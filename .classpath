@@ -7,5 +7,6 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/android-websockets.jar"/>
 	<classpathentry kind="lib" path="libs/google-play-services.jar"/>
+	<classpathentry kind="lib" path="libs/androidplot-core-0.6.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

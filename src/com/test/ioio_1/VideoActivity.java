@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.androidplot.xy.BoundaryMode;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYStepMode;
 import com.codebutler.android_websockets.WebSocketClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,6 +51,7 @@ import android.view.InputDevice;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
@@ -66,9 +73,13 @@ public class VideoActivity extends Activity {
     private MjpegView mv = null;
     ProgressBar tb;
     WebSocketClient client;
+    private XYPlot geigerPlot = null;
+    private SimpleXYSeries geigerSeries = null;
+    private static final int HISTORY_SIZE = 300;            // number of points to plot in history
     private InputDevice _device;
 	private Socket _sock;
 	private Thread _th;
+	private RelativeLayout video, plot;
 	private TextView _roll, _pitch, _throttle, _yaw, geiger, _mode;
 	public static int mode = 0;
 	private static String[] modeNames = {"Stabilize", "Alt Hole", "Loiter", "RTL", "Land", "Sport"};
@@ -126,6 +137,9 @@ public class VideoActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, 
         WindowManager.LayoutParams.FLAG_FULLSCREEN);
 		setContentView(R.layout.activity_video);
+		video = (RelativeLayout) findViewById(R.id.vid_lay);
+		plot = (RelativeLayout) findViewById(R.id.graph_lay);
+		////for maps
 		// Get the location manager
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         // Define the criteria how to select the locatioin provider -> use
@@ -174,6 +188,8 @@ public class VideoActivity extends Activity {
                 .add(latLng).color(Color.BLUE).width((float) 1.5)
         );
 		
+	    
+	    ///for pi comm
 		Bundle extras = getIntent().getExtras();
 		ip = extras.getString("IP");
 		if(ip.equals("")){
@@ -185,6 +201,7 @@ public class VideoActivity extends Activity {
 		path = "http://" + host+":8080/?action=stream";
 		websocketPath = "ws://" + host+":8000/ws";
 		
+		////for IOIO OTG
 		new connect().execute();
 		_mode = (TextView)findViewById(R.id.modeView);
 		_mode.setText( modeNames[mode]);
@@ -194,8 +211,33 @@ public class VideoActivity extends Activity {
 		mv.setSource(path);
         //if(result!=null) result.setSkip(1);
 		
+		////for video feed
 		mv.setDisplayMode(MjpegView.SIZE_FULLSCREEN);
        mv.showFps(false);
+       
+       ////for geiger graph
+       geigerPlot = (XYPlot) findViewById(R.id.geigerPlot);
+
+       geigerSeries = new SimpleXYSeries("Geiger");
+       geigerSeries.useImplicitXVals();
+
+       geigerPlot.setRangeBoundaries(0, 10, BoundaryMode.FIXED);
+       geigerPlot.setDomainBoundaries(0, HISTORY_SIZE, BoundaryMode.FIXED);
+       geigerPlot.addSeries(geigerSeries,
+               new LineAndPointFormatter(
+                       Color.rgb(100, 100, 200), null, null, null));
+       geigerPlot.setDomainStepMode(XYStepMode.INCREMENT_BY_VAL);
+       geigerPlot.setDomainStepValue(HISTORY_SIZE/10);
+       geigerPlot.setTicksPerRangeLabel(3);
+       geigerPlot.setDomainLabel("Sample Index");
+       geigerPlot.getDomainLabelWidget().pack();
+       geigerPlot.setRangeLabel("Geiger Data (Cps)");
+       geigerPlot.getRangeLabelWidget().pack();
+
+       geigerPlot.setRangeValueFormat(new DecimalFormat("#"));
+       geigerPlot.setDomainValueFormat(new DecimalFormat("#"));
+       
+       ////for geiger data
        try{
 	       client = new WebSocketClient(URI.create(websocketPath), new WebSocketClient.Listener(){
 	           @Override
@@ -213,6 +255,14 @@ public class VideoActivity extends Activity {
 	           	     public void run() {
 	           	    	 String[] mess = message.split(" ");
 	           	    	 geiger.setText(mess[0]+" cps");
+	           	    	 
+	           	    	 // get rid the oldest sample in history:
+	           	        if (geigerSeries.size() > HISTORY_SIZE) {
+	           	            geigerSeries.removeFirst();
+	           	        }
+	           	        // add the latest history sample:
+	           	       geigerSeries.addLast(null, Number.class.cast(mess[0]));
+	           	        
 	           	    	 mess = mess[1].split("\t");
 	           	    	LatLng latLng = new LatLng(Float.valueOf(mess[0]), Float.valueOf(mess[1]));
 	           	    	map.getUiSettings().setZoomControlsEnabled(false);
@@ -251,6 +301,8 @@ public class VideoActivity extends Activity {
        }catch(Exception e){
     	   
        }
+       
+       ////for shield
         String deviceInfoText = "";//dumpDeviceInfo();
 		deviceInfoText += "\n";
 		try{
@@ -285,6 +337,29 @@ public class VideoActivity extends Activity {
 		return true;
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Handle item selection
+	    switch (item.getItemId()) {
+	        case R.id.action_view:
+	            changeView();
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
+	}
+	
+	private void changeView() {
+		if(video.getVisibility() == RelativeLayout.VISIBLE){
+			video.setVisibility(RelativeLayout.INVISIBLE);
+			plot.setVisibility(RelativeLayout.VISIBLE);
+		}else{
+			video.setVisibility(RelativeLayout.VISIBLE);
+			plot.setVisibility(RelativeLayout.INVISIBLE);
+		}
+		
+	}
+
 	@Override
 	protected void onPause() {
 		if(mv!=null){

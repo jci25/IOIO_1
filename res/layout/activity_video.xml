@@ -1,61 +1,118 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".VideoActivity"
+    android:animateLayoutChanges="true" 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#000000"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+	<RelativeLayout 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VideoActivity"
-    android:animateLayoutChanges="true" >
-    <RelativeLayout
-        android:id="@+id/v1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-    
-    <com.test.ioio_1.MjpegView
-        android:id="@+id/mv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" />
-
-    <ProgressBar
-        android:id="@+id/throttleBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        android:indeterminate="false"
-        android:max="2000" />
-     <TextView
-        android:id="@+id/Gieger"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="#CCD1D1D1"
-        android:text="Gieger Data" />
-
-     
-     <fragment
-        android:id="@+id/map"
-        android:layout_width="150dp"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="#00000000"
-        class="com.google.android.gms.maps.MapFragment" />
-      <TextView
-         android:id="@+id/modeView"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:layout_alignParentRight="true"
-         android:layout_centerVertical="true"
-         android:background="#CCD1D1D1"
-         android:text="Mode: N/A" />
-
+    android:id="@+id/vid_lay"
+    android:animateLayoutChanges="true"
+    android:visibility="visible" >
+	    <RelativeLayout
+	        android:id="@+id/v1"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent">
+	    
+	    <com.test.ioio_1.MjpegView
+	        android:id="@+id/mv"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true" />
+	
+	    <ProgressBar
+	        android:id="@+id/throttleBar"
+	        style="?android:attr/progressBarStyleHorizontal"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:indeterminate="false"
+	        android:max="2000" />
+	     
+	
+	     
+	     <fragment
+	        android:id="@+id/map"
+	        android:layout_width="150dp"
+	        android:layout_height="80dp"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:background="#00000000"
+	        class="com.google.android.gms.maps.MapFragment" />
+	      <TextView
+	         android:id="@+id/modeView"
+	         android:layout_width="wrap_content"
+	         android:layout_height="wrap_content"
+	         android:layout_alignParentRight="true"
+	         android:layout_centerVertical="true"
+	         android:background="#CCD1D1D1"
+	         android:text="Mode: N/A" />
+	         <TextView
+	        android:id="@+id/Gieger"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentRight="true"
+	        android:background="#CCD1D1D1"
+	        android:text="Gieger Data" />
+	
+	     </RelativeLayout>
      </RelativeLayout>
-     
+     <RelativeLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/graph_lay"
+    android:animateLayoutChanges="true"
+    android:background="#000000"
+    android:visibility="invisible" >
     
-
-</RelativeLayout>
+    	<com.androidplot.xy.XYPlot
+                android:id="@+id/geigerPlot"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="0dp"
+                android:layout_weight="1"
+                android:layout_marginTop="10px"
+                android:layout_marginLeft="10px"
+                android:layout_marginRight="10px"
+                androidPlot.backgroundPaint.color="#000000"
+                androidPlot.borderPaint.color="#000000"
+                androidplot.renderMode="use_background_thread"
+                androidPlot.title="History"
+                androidPlot.domainLabel="Domain"
+                androidPlot.rangeLabel="Range"
+                androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+                androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+                androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+                androidPlot.graphWidget.backgroundPaint.color="#000000"
+                androidPlot.graphWidget.gridBackgroundPaint.color="#000000"
+                androidPlot.graphWidget.marginTop="20dp"
+                androidPlot.graphWidget.marginLeft="15dp"
+                androidPlot.graphWidget.marginBottom="25dp"
+                androidPlot.graphWidget.marginRight="10dp"
+                androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+                androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+                androidPlot.legendWidget.textPaint.textSize="@dimen/legend_text_font_size"
+                androidPlot.legendWidget.iconSizeMetrics.heightMetric.value="15dp"
+                androidPlot.legendWidget.iconSizeMetrics.widthMetric.value="15dp"
+                androidPlot.legendWidget.heightMetric.value="25dp"
+                />
+<!--                <com.test.ioio_1.MjpegView
+	        android:id="@+id/mv"
+	        android:layout_width="150dp"
+	        android:layout_height="80dp"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true" />
+-->
+    </RelativeLayout>
+</FrameLayout>
