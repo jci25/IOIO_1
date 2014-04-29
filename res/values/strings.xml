@@ -15,5 +15,14 @@
     <string name="yaw">- Yaw = </string>
     <string name="mode">- Mode = Stable</string>
     <string name="title_activity_video">VideoActivity</string>
+    
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+    
+    <string-array name="pages_array">
+        <item>Copter Control</item>
+        <item>Previous Runs</item>
+        <item>Settings</item>
+    </string-array>
 
 </resources>

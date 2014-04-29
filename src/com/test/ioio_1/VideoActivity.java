@@ -20,6 +20,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
+import com.androidplot.util.PlotStatistics;
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
@@ -80,7 +81,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
     WebSocketClient client;
     private XYPlot geigerPlot = null;
     private SimpleXYSeries geigerSeries = null;
-    private static final int HISTORY_SIZE = 120;            // number of points to plot in history
+    private static final int HISTORY_SIZE = 45;            // number of points to plot in history
     private InputDevice _device;
 	private Socket _sock;
 	private Thread _th;
@@ -238,8 +239,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 
        geigerSeries = new SimpleXYSeries("Geiger");
        geigerSeries.useImplicitXVals();
-
-       geigerPlot.setRangeBoundaries(0, 10, BoundaryMode.FIXED);
+       
+       geigerPlot.setRangeBoundaries(0, 50, BoundaryMode.AUTO);
        geigerPlot.setDomainBoundaries(0, HISTORY_SIZE, BoundaryMode.FIXED);
        geigerPlot.addSeries(geigerSeries,
                new LineAndPointFormatter(
@@ -255,6 +256,10 @@ public class VideoActivity extends Activity implements OnNavigationListener {
        geigerPlot.setRangeValueFormat(new DecimalFormat("#"));
        geigerPlot.setDomainValueFormat(new DecimalFormat("#"));
        
+      // for(int i = 0; i< 50; i++){
+    	//   geigerSeries.addFirst(null, 2);
+      // }
+       
        ////for geiger data
        try{
 	       client = new WebSocketClient(URI.create(websocketPath), new WebSocketClient.Listener(){
@@ -268,6 +273,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           public void onMessage(final String message) {
 	               //Log.d(TAG, String.format("Got string message! %s", message));
 	           	System.out.println(message);
+	           	String[] mess = message.split(" ");
 	           	runOnUiThread(new Runnable() {
 	           	     @Override
 	           	     public void run() {
@@ -275,13 +281,14 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           	    	 geiger.setText(mess[0]+" cps");
 	           	    	 
 	           	    	 // get rid the oldest sample in history:
-	           	        if (geigerSeries.size() > HISTORY_SIZE) {
-	           	            geigerSeries.removeFirst();
-	           	        }
+	           	        //if (geigerSeries.size() > HISTORY_SIZE) {
+	           	        //    geigerSeries.removeFirst();
+	           	        //}
 	           	        // add the latest history sample:
-	           	       geigerSeries.addLast(null, Number.class.cast(mess[0]));
-	           	        
-	           	    	 mess = mess[1].split("\t");
+	           	       geigerSeries.addFirst(null, Integer.valueOf(mess[0]));
+	           	    	//geigerSeries.addFirst(null, 2);
+	           	       geigerPlot.redraw();
+	           	       mess = mess[1].split("\t");
 	           	    	LatLng latLng = new LatLng(Float.valueOf(mess[0]), Float.valueOf(mess[1]));
 	           	    	map.getUiSettings().setZoomControlsEnabled(false);
 	           			// Move the camera instantly to hamburg with a zoom of 15.
