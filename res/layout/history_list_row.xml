@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dip" >
+    
+    <!--  ListRow Left sied Thumbnail image -->
+    <LinearLayout android:id="@+id/thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="3dip"
+        android:layout_alignParentLeft="true"
+        android:layout_marginRight="5dip">
+ 
+        
+        <ImageView
+                    android:id="@+id/profilePicture"
+                    android:layout_width="150dip"
+            		android:layout_height="150dip"
+                    android:gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+					/>
+ 
+    </LinearLayout>
+    
+    <!-- Title Of Song-->
+   <!--  <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/thumbnail"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Full Name"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="15dip"
+        android:textStyle="bold"/> -->
+
+    <TextView
+        android:id="@+id/currRun"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/thumbnail"
+        android:layout_toRightOf="@+id/thumbnail"
+        android:text="Current Run" />
+
+    <TextView
+        android:id="@+id/currTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/currRun"
+        android:layout_below="@+id/currRun"
+        android:text="Current Time" />
+
+    <TextView
+        android:id="@+id/GPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/currTime"
+        android:layout_below="@+id/currTime"
+        android:text="Coordinates" />
+
+    <TextView
+        android:id="@+id/counts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/GPS"
+        android:layout_below="@+id/GPS"
+        android:text="counts" />
+
+</RelativeLayout>
