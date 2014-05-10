@@ -1,12 +1,18 @@
 package com.test.ioio_1;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,10 +21,14 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.androidplot.util.PlotStatistics;
 import com.androidplot.xy.BoundaryMode;
@@ -48,7 +58,11 @@ import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.InputDevice;
@@ -62,6 +76,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SpinnerAdapter;
@@ -95,7 +110,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
     public float[] gamepadAxisMinVals = null;
     public float[] gamepadAxisMaxVals = null;
     public int[] gamepadButtonIndices = null;
-    
+    private JSONArray jsonArray = new JSONArray();
+    private String lastHtml = "empty";
     static int[] gamepadButtonMapping =
 	    {
 	    	KeyEvent.KEYCODE_BUTTON_1,
@@ -280,6 +296,14 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           	    	 String[] mess = message.split(" ");
 	           	    	 geiger.setText(mess[0]+" cps");
 	           	    	 
+	           	    	final JSONObject obj1 = new JSONObject();
+		           		try {
+		           			obj1.put("counts", mess[0]);
+
+		           		} catch (JSONException e) {
+		           		    // TODO Auto-generated catch block
+		           		    e.printStackTrace();
+		           		}
 	           	    	 // get rid the oldest sample in history:
 	           	        //if (geigerSeries.size() > HISTORY_SIZE) {
 	           	        //    geigerSeries.removeFirst();
@@ -298,9 +322,88 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           		 List<LatLng> points = lineTrace.getPoints();
 	           		 points.add(latLng);
 	           		 lineTrace.setPoints(points);
+	           		Calendar c = Calendar.getInstance();
 	           		    // Zoom in, animating the camera.
 	           		   // map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
-	           	    }
+	           		try {
+	           			obj1.put("lon", String.valueOf(Float.valueOf(mess[1])));
+	           			obj1.put("lat", String.valueOf(Float.valueOf(mess[0])));
+	           			obj1.put("time_stamp", String.valueOf(c.getTimeInMillis()));
+	           			
+	           			new Thread(new Runnable() {
+	           			    public void run() {
+	           			    	try{
+	           			    		String target = ip;
+		    	           			String host = target.substring(0, target.indexOf(":"));
+	           			    		/*URL yahoo = new URL("http://" + host+":8080/?action=snapshot");
+	           			    		BufferedReader in = new BufferedReader(
+	           			    		            new InputStreamReader(
+	           			    		            yahoo.openStream()));
+
+	           			    		String inputLine;
+	           			    		String str = "";
+	           			    		while ((inputLine = in.readLine()) != null)
+	           			    		    str = str + inputLine;
+
+	           			    		in.close();*/
+		    	           			//ImageView im = new ImageView(getBaseContext());
+	           			    		//UrlImageViewHelper.setUrlDrawable(im,"http://" + host+":8080/?action=snapshot");
+	           			    		//UrlImageViewHelper.remove("http://" + host+":8080/?action=snapshot");
+	           			    		URL url = new URL("http://" + host+":8080/?action=snapshot");
+	           			         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+	           			         connection.setDoInput(true);
+	           			         connection.connect();
+	           			         InputStream input = connection.getInputStream();
+	           			         Bitmap bitmap = BitmapFactory.decodeStream(input);
+	           			    		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();  
+	           			    		bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+	           			    		byte[] byteArray = byteArrayOutputStream .toByteArray();
+	           			    		String html = Base64.encodeToString(byteArray, Base64.DEFAULT);
+	           			    		
+		    	           			/*HttpClient client = new DefaultHttpClient();
+		    	           			HttpGet request = new HttpGet("http://" + host+":8080/?action=snapshot");
+		    	           			HttpResponse response = client.execute(request);
+	
+		    	           			String html = "";
+		    	           			InputStream in = response.getEntity().getContent();
+		    	           			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		    	           			StringBuilder str = new StringBuilder();
+		    	           			String line = null;
+		    	           			while((line = reader.readLine()) != null)
+		    	           			{
+		    	           			    str.append(line);
+		    	           			}
+		    	           			in.close();
+	           			    		String html = "";
+		    	           			html = str.toString();
+		    	           			byte[] data = html.getBytes();
+		    	           			html = Base64.encodeToString(data, Base64.DEFAULT);*/
+		    	           			//System.out.println(html);
+		    	           			obj1.put("image", html);
+		    	           			lastHtml = html;
+	           			    	}catch(Exception e){
+	           			    		//System.out.print(e.toString());
+	           			    		try {
+										obj1.put("image", lastHtml);
+									} catch (JSONException e1) {
+										// TODO Auto-generated catch block
+										e1.printStackTrace();
+									}
+	           			    	}
+	           			    }
+	           			  }).start();
+	           			
+	           			
+	           			
+	           			
+
+	           		} catch (JSONException e) {
+	           		    // TODO Auto-generated catch block
+	           		    e.printStackTrace();
+	           		}
+	           		
+	           		jsonArray.put(obj1);
+	           	  }
 	           	});
 	           	
 	           }
@@ -365,6 +468,9 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	    switch (item.getItemId()) {
 	        case R.id.action_view:
 	            changeView();
+	            return true;
+	        case R.id.action_save:
+	            new saveData().execute();
 	            return true;
 	        default:
 	            return super.onOptionsItemSelected(item);
@@ -785,7 +891,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 			}
 		
 		}
-		public class connect extends AsyncTask<String, Void, String> {
+public class connect extends AsyncTask<String, Void, String> {
 			
 			@Override
 			protected String doInBackground(String... input) {
@@ -816,6 +922,60 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 
 
 		}
+
+	public class saveData extends AsyncTask<String, Void, String> {
+	
+	@Override
+	protected String doInBackground(String... input) {
+		//TODO: get info and parse web
+		System.out.println("IN BACKGROUND");
+		//Toast.makeText( getBaseContext(), "Saving data", Toast.LENGTH_LONG).show();
+        JSONObject finalObj = new JSONObject();
+		try {
+			finalObj.put("Data", jsonArray);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String jsonStr = finalObj.toString();
+
+	    System.out.println("jsonString: "+jsonStr);
+	    //144.118.59.210:1234
+		Socket sock_ = new Socket();
+		try {
+			sock_.connect(new InetSocketAddress("192.168.1.103", 1234));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		PrintWriter writer;
+		try {
+			System.out.println("about to make writer");
+			writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(sock_.getOutputStream())));
+			System.out.println("about to write");
+			writer.write(jsonArray.toString());
+			System.out.println("lets flush that mo-fo");
+			writer.flush();
+			System.out.println("flushed it");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	@Override
+	protected void onProgressUpdate(Void... values) {
+	}
+	
+	@Override
+	protected void onPostExecute(String result) {
+		
+	}
+
+
+
+}
 		
 		@Override
 		public void onBackPressed()

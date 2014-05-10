@@ -56,6 +56,7 @@ public class HistoryFragment extends Fragment {
 	private ListView listView;
 	private WebSocketClient client;
 	private ArrayList<HistoryList> HLA = new ArrayList<HistoryList>();
+	private ArrayList<HistoryList> HLA1 = new ArrayList<HistoryList>();
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -101,12 +102,23 @@ public class HistoryFragment extends Fragment {
   	           try {
 
             	        JSONArray obj = new JSONArray(message);
+            	        ArrayList<String> runs = new ArrayList<String>();
             	        for (int i = 0; i < obj.length(); i++){
             	        	JSONObject currObj = obj.getJSONObject(i);
+            	        	runs.add(currObj.getString("curr_run"));
             	        	HistoryList hl = new HistoryList(currObj.getString("image"), currObj.getString("lat"), currObj.getString("lon"), currObj.getString("counts"), currObj.getString("curr_run"), currObj.getString("time_stamp"));
+            	        	HLA1.add(hl);
+            	        }
+            	        HashSet hs = new HashSet();
+            	        hs.addAll(runs);
+            	        runs.clear();
+            	        runs.addAll(hs);
+            	        for(int i = 0; i < runs.size(); i++){
+            	        	//System.out.println(runs.get(i));
+            	        	HistoryList hl = new HistoryList("", "", "", "", runs.get(i), "");
             	        	HLA.add(hl);
             	        }
-            	     System.out.println("yup");
+            	     
  	       	    } catch (Exception e) {
  	       	    	System.out.println("Could not parse malformed JSON:");
  	       	    	System.out.println(e.toString());
@@ -117,7 +129,7 @@ public class HistoryFragment extends Fragment {
  				 
             	     getActivity().runOnUiThread(new Runnable() {
             	    	    public void run() {
-            	    	    	HistoryListAdapter hla = new HistoryListAdapter(getActivity(), HLA);
+            	    	    	HistoryListAdapter hla = new HistoryListAdapter(getActivity(), HLA, HLA1);
                        	     	System.out.println("yyup");
             	    	    	listView.setAdapter(hla);
             	    	    }

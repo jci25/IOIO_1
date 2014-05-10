@@ -3,7 +3,13 @@
     <item
         android:id="@+id/action_view"
         android:orderInCategory="100"
-        android:showAsAction="ifRoom"
+        android:showAsAction="always"
         android:title="@string/action_view"/>
+    
+    <item
+        android:id="@+id/action_save"
+        android:orderInCategory="50"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_save"/>
 
 </menu>

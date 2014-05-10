@@ -4,6 +4,7 @@
     <string name="app_name">IOIO_1</string>
     <string name="action_settings">Settings</string>
     <string name="action_view">Change View</string>
+    <string name="action_save">Save Data</string>
     <string name="hello_world">Hello world!</string>
     <string name="edit_ip">Enter target address</string>
     <string name="button_connect">Connect</string>
@@ -15,14 +16,15 @@
     <string name="yaw">- Yaw = </string>
     <string name="mode">- Mode = Stable</string>
     <string name="title_activity_video">VideoActivity</string>
-    
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
-    
+
     <string-array name="pages_array">
         <item>Copter Control</item>
         <item>Previous Runs</item>
         <item>Settings</item>
     </string-array>
+
+    <string name="title_activity_history_run">HistoryRun</string>
 
 </resources>

@@ -185,6 +185,11 @@ containing a value of this type.
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
 
+         Example customization of dimensions originally defined in res/values/dimens.xml
+         (such as screen margins) for screens with more than 820dp of available width. This
+         would include 7" and 10" devices in landscape (~960dp and ~1280dp respectively).
+    
+
          Customize dimensions originally defined in res/values/dimens.xml (such as
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
@@ -225,63 +230,68 @@ containing a value of this type.
         public static final int common_signin_btn_text_pressed_dark=0x7f020016;
         public static final int common_signin_btn_text_pressed_light=0x7f020017;
         public static final int drawer_shadow=0x7f020018;
-        public static final int ic_drawer=0x7f020019;
-        public static final int ic_launcher=0x7f02001a;
-        public static final int ic_plusone_medium_off_client=0x7f02001b;
-        public static final int ic_plusone_small_off_client=0x7f02001c;
-        public static final int ic_plusone_standard_off_client=0x7f02001d;
-        public static final int ic_plusone_tall_off_client=0x7f02001e;
-        public static final int quadcopter_icon=0x7f02001f;
+        public static final int gradient_bg=0x7f020019;
+        public static final int gradient_bg_hover=0x7f02001a;
+        public static final int ic_drawer=0x7f02001b;
+        public static final int ic_launcher=0x7f02001c;
+        public static final int ic_plusone_medium_off_client=0x7f02001d;
+        public static final int ic_plusone_small_off_client=0x7f02001e;
+        public static final int ic_plusone_standard_off_client=0x7f02001f;
+        public static final int ic_plusone_tall_off_client=0x7f020020;
+        public static final int quadcopter_icon=0x7f020021;
+        public static final int selector_list=0x7f020022;
     }
     public static final class id {
-        public static final int GPS=0x7f050016;
-        public static final int Gieger=0x7f05000e;
-        public static final int action_settings=0x7f05001c;
-        public static final int action_view=0x7f05001d;
-        public static final int connectB=0x7f050018;
-        public static final int content_frame=0x7f050006;
-        public static final int counts=0x7f050017;
+        public static final int Gieger=0x7f050010;
+        public static final int action_save=0x7f05001b;
+        public static final int action_settings=0x7f050019;
+        public static final int action_view=0x7f05001a;
+        public static final int connectB=0x7f050016;
+        public static final int container=0x7f050005;
+        public static final int content_frame=0x7f050008;
         public static final int currRun=0x7f050014;
-        public static final int currTime=0x7f050015;
-        public static final int drawer_layout=0x7f050005;
-        public static final int edit_ip=0x7f05001a;
-        public static final int geigerPlot=0x7f050010;
-        public static final int graph_lay=0x7f05000f;
-        public static final int historyListView=0x7f050011;
+        public static final int drawer_layout=0x7f050007;
+        public static final int edit_ip=0x7f050017;
+        public static final int geigerPlot=0x7f050012;
+        public static final int graph_lay=0x7f050011;
+        public static final int historyListView=0x7f050013;
         public static final int hybrid=0x7f050004;
-        public static final int label=0x7f05001b;
-        public static final int left_drawer=0x7f050007;
-        public static final int map=0x7f05000c;
-        public static final int modeView=0x7f05000d;
-        public static final int mv=0x7f05000a;
+        public static final int label=0x7f050018;
+        public static final int left_drawer=0x7f050009;
+        public static final int map=0x7f05000e;
+        public static final int modeView=0x7f05000f;
+        public static final int mv=0x7f05000c;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
-        public static final int profilePicture=0x7f050013;
         public static final int satellite=0x7f050002;
         public static final int terrain=0x7f050003;
-        public static final int textView1=0x7f050019;
-        public static final int throttleBar=0x7f05000b;
-        public static final int thumbnail=0x7f050012;
-        public static final int v1=0x7f050009;
-        public static final int vid_lay=0x7f050008;
+        public static final int textView1=0x7f050006;
+        public static final int throttleBar=0x7f05000d;
+        public static final int thumbnail=0x7f050015;
+        public static final int v1=0x7f05000b;
+        public static final int vid_lay=0x7f05000a;
     }
     public static final class integer {
         public static final int google_play_services_version=0x7f070000;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int activity_video=0x7f030001;
-        public static final int drawer_list_item=0x7f030002;
-        public static final int history_frag=0x7f030003;
-        public static final int history_list_row=0x7f030004;
-        public static final int main_frag=0x7f030005;
-        public static final int spinner_list=0x7f030006;
+        public static final int activity_history_run=0x7f030000;
+        public static final int activity_main=0x7f030001;
+        public static final int activity_video=0x7f030002;
+        public static final int drawer_list_item=0x7f030003;
+        public static final int fragment_history_run=0x7f030004;
+        public static final int history_frag=0x7f030005;
+        public static final int history_list_row=0x7f030006;
+        public static final int main_frag=0x7f030007;
+        public static final int spinner_list=0x7f030008;
     }
     public static final class menu {
-        public static final int main=0x7f0b0000;
-        public static final int video=0x7f0b0001;
+        public static final int history_run=0x7f0b0000;
+        public static final int main=0x7f0b0001;
+        public static final int video=0x7f0b0002;
     }
     public static final class string {
+        public static final int action_save=0x7f06001e;
         public static final int action_settings=0x7f06001c;
         public static final int action_view=0x7f06001d;
         public static final int app_name=0x7f06001b;
@@ -308,8 +318,8 @@ containing a value of this type.
         [CHAR LIMIT=70] 
          */
         public static final int auth_client_using_bad_version_title=0x7f060014;
-        public static final int button_close=0x7f060021;
-        public static final int button_connect=0x7f060020;
+        public static final int button_close=0x7f060022;
+        public static final int button_connect=0x7f060021;
         /**  Button in confirmation dialog to enable Google Play services.  Clicking it
         will direct user to application settings of Google Play services where they
         can enable it [CHAR LIMIT=40] 
@@ -381,20 +391,21 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f060013;
-        public static final int controls=0x7f060022;
-        public static final int drawer_close=0x7f06002a;
-        public static final int drawer_open=0x7f060029;
-        public static final int edit_ip=0x7f06001f;
-        public static final int hello_world=0x7f06001e;
+        public static final int controls=0x7f060023;
+        public static final int drawer_close=0x7f06002b;
+        public static final int drawer_open=0x7f06002a;
+        public static final int edit_ip=0x7f060020;
+        public static final int hello_world=0x7f06001f;
         /**  Location client code resources (prefix with location_client) 
          */
         public static final int location_client_powered_by_google=0x7f06001a;
-        public static final int mode=0x7f060027;
-        public static final int pitch=0x7f060024;
-        public static final int roll=0x7f060023;
-        public static final int throttle=0x7f060025;
-        public static final int title_activity_video=0x7f060028;
-        public static final int yaw=0x7f060026;
+        public static final int mode=0x7f060028;
+        public static final int pitch=0x7f060025;
+        public static final int roll=0x7f060024;
+        public static final int throttle=0x7f060026;
+        public static final int title_activity_history_run=0x7f06002c;
+        public static final int title_activity_video=0x7f060029;
+        public static final int yaw=0x7f060027;
     }
     public static final class style {
         /** 

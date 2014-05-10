@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/selector_list"
     android:padding="5dip" >
     
-    <!--  ListRow Left sied Thumbnail image -->
+    <!--  ListRow Left sied Thumbnail image 
     <LinearLayout android:id="@+id/thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +22,7 @@
                     android:layout_marginBottom="10dp"
 					/>
  
-    </LinearLayout>
+    </LinearLayout>-->
     
     <!-- Title Of Song-->
    <!--  <TextView
@@ -37,14 +38,19 @@
         android:textStyle="bold"/> -->
 
     <TextView
+        android:padding="10dip"
         android:id="@+id/currRun"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/thumbnail"
         android:layout_toRightOf="@+id/thumbnail"
+        android:textColor="#040404"
+        android:typeface="sans"
+        android:textSize="15dip"
+        android:textStyle="bold"
         android:text="Current Run" />
 
-    <TextView
+<!--      <TextView
         android:id="@+id/currTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,6 +72,6 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/GPS"
         android:layout_below="@+id/GPS"
-        android:text="counts" />
+        android:text="counts" /> -->
 
 </RelativeLayout>

@@ -3,7 +3,9 @@ package com.test.ioio_1;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,11 +28,13 @@ import android.widget.TextView;
 public class HistoryListAdapter extends ArrayAdapter<HistoryList> {
 	  private final Context context;
 	  private final ArrayList<HistoryList> hl;
+	  private final ArrayList<HistoryList> hl1;
 	  Bitmap bitmap;
-	  public HistoryListAdapter(Context context, ArrayList<HistoryList> hl) {
+	  public HistoryListAdapter(Context context, ArrayList<HistoryList> hl, ArrayList<HistoryList> hl1) {
 	    super(context, R.layout.history_list_row, hl);
 	    this.context = context;
 	    this.hl = hl;
+	    this.hl1 = hl1;
 	    
 	  }
 
@@ -46,25 +50,36 @@ public class HistoryListAdapter extends ArrayAdapter<HistoryList> {
 			@Override
 			public void onClick(View arg0) {
 				//do something here if you want to
+				Intent intent = new Intent(context, HistoryRun.class);
+				//intent.putExtra("LOGGED_DATA", hl1);
+				context.startActivity(intent);
 			}
 	    	
 	    });
 	    TextView run = (TextView) rowView.findViewById(R.id.currRun);
-	    TextView time = (TextView) rowView.findViewById(R.id.currTime);
-	    TextView gps = (TextView) rowView.findViewById(R.id.GPS);
-	    TextView counts = (TextView) rowView.findViewById(R.id.counts);
-	    ImageView imageView = (ImageView) rowView.findViewById(R.id.profilePicture);
-	    run.setText(hl.get(position).getRun());
-	    time.setText(hl.get(position).getTime());
-	    gps.setText(hl.get(position).getLat() + " " + hl.get(position).getLon());
-	    counts.setText(hl.get(position).getCounts());
+	   // TextView time = (TextView) rowView.findViewById(R.id.currTime);
+	   // TextView gps = (TextView) rowView.findViewById(R.id.GPS);
+	   // TextView counts = (TextView) rowView.findViewById(R.id.counts);
+	   // ImageView imageView = (ImageView) rowView.findViewById(R.id.profilePicture);
+	    Calendar c = Calendar.getInstance();
+	    try{
+	    	c.setTimeInMillis(Long.parseLong(hl.get(position).getRun()));
+	    	SimpleDateFormat df = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss");
+	    	String formattedDate = df.format(c.getTime());
+	    	run.setText("Run from " + formattedDate);
+	    }catch(Exception e){
+	    	run.setText("Run Date Unknown");
+	    }
+	  //  time.setText(hl.get(position).getTime());
+	  //  gps.setText(hl.get(position).getLat() + " " + hl.get(position).getLon());
+	  //  counts.setText(hl.get(position).getCounts());
 	    
 	    
-	    	byte[] decodedString = Base64.decode(hl.get(position).getImage(), Base64.DEFAULT);
+	//    	byte[] decodedString = Base64.decode(hl.get(position).getImage(), Base64.DEFAULT);
 		    //Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-		    InputStream inputStream  = new ByteArrayInputStream(decodedString);
-		    Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
-		    imageView.setImageBitmap(bitmap);
+	//	    InputStream inputStream  = new ByteArrayInputStream(decodedString);
+	//	    Bitmap bitmap  = BitmapFactory.decodeStream(inputStream);
+	//	    imageView.setImageBitmap(bitmap);
 	    
 	    //UrlImageViewHelper.setUrlDrawable(imageView, bitmap);
 	    

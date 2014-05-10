@@ -92,9 +92,9 @@ public class MjpegInputStream extends DataInputStream {
 		reset();
 		byte[] frameData = new byte[mContentLength];
 		skipBytes(headerLen);
-		System.out.println(frameData.length);
+		//System.out.println(frameData.length);
 		readFully(frameData);
-		System.out.println("read");
+		//System.out.println("read");
 		return BitmapFactory.decodeStream(new ByteArrayInputStream(frameData));
 	}
 }
