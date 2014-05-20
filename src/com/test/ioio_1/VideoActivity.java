@@ -838,6 +838,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 			protected void sendSignal(int channel, float dc) {
 				if (!_sock.isConnected())
 					//return;
+				//System.out.println("here");
 				try {
 					PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_sock.getOutputStream())));
 					writer.write(channel + ":" + dc +"\n");

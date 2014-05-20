@@ -154,7 +154,7 @@ public class MainActivity extends Activity {
     	if(position == 0){
     		fragment = new ProfileFragment();
     	}else if(position == 1){
-    		fragment = new HistoryFragment();
+    		fragment = new SettingsFragment();
     		//fragment = new FriendsFragment();
     		//args.putString("URL", "http://www.bbc.co.uk/programmes/b006q2x0/features/characters");
     	}else if(position == 2){

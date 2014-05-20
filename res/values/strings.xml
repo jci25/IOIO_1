@@ -21,7 +21,7 @@
 
     <string-array name="pages_array">
         <item>Copter Control</item>
-        <item>Previous Runs</item>
+        
         <item>Settings</item>
     </string-array>
 
