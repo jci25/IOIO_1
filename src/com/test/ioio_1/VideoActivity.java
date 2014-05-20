@@ -88,17 +88,17 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	Polyline lineTrace;
 	private boolean small = true;
 	private String ip;
-	private String path = "http://" + ip+":8080/?action=stream";
+	private String path = "http://" + ip+":8080/?action=stream"; //used for video stream
 	private String websocketPath;
-	Marker marker;
-    private MjpegView mv = null;
-    ProgressBar tb;
-    WebSocketClient client;
-    private XYPlot geigerPlot = null;
+	Marker marker;	//used for map
+    private MjpegView mv = null; //used for video
+    ProgressBar tb;	//used for throttle
+    WebSocketClient client; 	//used for geiger
+    private XYPlot geigerPlot = null;	//used for history plot
     private SimpleXYSeries geigerSeries = null;
     private static final int HISTORY_SIZE = 45;            // number of points to plot in history
-    private InputDevice _device;
-	private Socket _sock;
+    private InputDevice _device;	//used for shield controls
+	private Socket _sock;	//used to relay shield controls to pi
 	private Thread _th;
 	private RelativeLayout video, plot;
 	private TextView geiger, _mode;
@@ -186,6 +186,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
         if (location != null) {
         	latLng = new LatLng(location.getLatitude(), location.getLongitude());
           } else {
+        	  //if no position set to base location
         	latLng = new LatLng(39.864052799999996, -75.12900809999996);
           }
         geiger = (TextView) findViewById(R.id.Gieger);
@@ -194,6 +195,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 		        .getMap();
 		map.setOnMapLongClickListener(new OnMapLongClickListener(){
 
+			//expand map on long click
 			@Override
 			public void onMapLongClick(LatLng arg0) {
 				if(small){
@@ -276,7 +278,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
     	//   geigerSeries.addFirst(null, 2);
       // }
        
-       ////for geiger data
+       ////for geiger data when it is recieved from the pi
        try{
 	       client = new WebSocketClient(URI.create(websocketPath), new WebSocketClient.Listener(){
 	           @Override
@@ -296,6 +298,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           	    	 String[] mess = message.split(" ");
 	           	    	 geiger.setText(mess[0]+" cps");
 	           	    	 
+	           	    	 //as it recieves data start storing it in a json object
+	           	    	 //used as history logging when you press save data
 	           	    	final JSONObject obj1 = new JSONObject();
 		           		try {
 		           			obj1.put("counts", mess[0]);
@@ -333,22 +337,10 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           			new Thread(new Runnable() {
 	           			    public void run() {
 	           			    	try{
+	           			    		//need to get snapshot image
 	           			    		String target = ip;
 		    	           			String host = target.substring(0, target.indexOf(":"));
-	           			    		/*URL yahoo = new URL("http://" + host+":8080/?action=snapshot");
-	           			    		BufferedReader in = new BufferedReader(
-	           			    		            new InputStreamReader(
-	           			    		            yahoo.openStream()));
-
-	           			    		String inputLine;
-	           			    		String str = "";
-	           			    		while ((inputLine = in.readLine()) != null)
-	           			    		    str = str + inputLine;
-
-	           			    		in.close();*/
-		    	           			//ImageView im = new ImageView(getBaseContext());
-	           			    		//UrlImageViewHelper.setUrlDrawable(im,"http://" + host+":8080/?action=snapshot");
-	           			    		//UrlImageViewHelper.remove("http://" + host+":8080/?action=snapshot");
+	           			    		
 	           			    		URL url = new URL("http://" + host+":8080/?action=snapshot");
 	           			         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 	           			         connection.setDoInput(true);
@@ -360,25 +352,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           			    		byte[] byteArray = byteArrayOutputStream .toByteArray();
 	           			    		String html = Base64.encodeToString(byteArray, Base64.DEFAULT);
 	           			    		
-		    	           			/*HttpClient client = new DefaultHttpClient();
-		    	           			HttpGet request = new HttpGet("http://" + host+":8080/?action=snapshot");
-		    	           			HttpResponse response = client.execute(request);
-	
-		    	           			String html = "";
-		    	           			InputStream in = response.getEntity().getContent();
-		    	           			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-		    	           			StringBuilder str = new StringBuilder();
-		    	           			String line = null;
-		    	           			while((line = reader.readLine()) != null)
-		    	           			{
-		    	           			    str.append(line);
-		    	           			}
-		    	           			in.close();
-	           			    		String html = "";
-		    	           			html = str.toString();
-		    	           			byte[] data = html.getBytes();
-		    	           			html = Base64.encodeToString(data, Base64.DEFAULT);*/
-		    	           			//System.out.println(html);
+		    	           			
 		    	           			obj1.put("image", html);
 		    	           			lastHtml = html;
 	           			    	}catch(Exception e){
@@ -496,6 +470,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 		super.onPause();
 	}
 	
+	
+	//this is for MJPEG video feed
 	public class DoRead extends AsyncTask<String, Void, MjpegInputStream> {
         protected MjpegInputStream doInBackground(String... url) {
             //TODO: if camera has authentication deal with it and don't just not work
@@ -531,6 +507,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
         }
     }
 	
+	
+	//used for connecting to shield/making sure shield is present
 	public InputDevice findBySource(int sourceType) {
         int[] ids = InputDevice.getDeviceIds(); 
 
@@ -643,6 +621,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 			if (keyCode == KeyEvent.KEYCODE_BUTTON_B)
 				Log.i("SHIELD_CONTROL", "Button B is pressed");
 			if (keyCode == KeyEvent.KEYCODE_BUTTON_X){
+				//change modes with buttons
 				Log.i("SHIELD_CONTROL", "Button X is pressed");
 				if(mode == 0){
 					mode = 5;
@@ -683,6 +662,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 			return true;
 		}
 		
+		//when there is a change in a motion event on the shield get the current values of the triggers
+		//and sticks then send it to the pi
 		@Override
 		public boolean onGenericMotionEvent(MotionEvent event) {
 			int source = event.getSource();
@@ -727,77 +708,20 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 			return false;
 		}
 		
-		/*public class SendSignalThread extends Thread {
-			
-			private float[] pastAxisValues = new float[5];
-			
-			private float toDutyCycle(float axisVal, int channel) {
-				
-				float adjustedValue = 0.0f;
-				float step = 0.0f;
-				float offset = 0.0f;
-				pastAxisValues[channel - 1] = axisVal;
-				
-				if (channel == 3) {
-					adjustedValue = axisVal * 50;
-					step = (0.094f - 0.053f) / 50;
-					offset = 0.053f;
-				}
-				else if (channel == 4) {
-					adjustedValue = (1.0f + axisVal) / 2.0f * 50;
-					step = (0.094f - 0.053f) / 50;
-					offset = 0.053f;
-				}
-				else {
-					adjustedValue = (1.0f + axisVal) / 2.0f * 50;
-					step = (0.094f - 0.051f) / 50;
-					offset = 0.051f;
-				}
-				return adjustedValue * step + offset;
-			}
-			
-			private void sendSignal(int channel, float dc) {
-				if (!_sock.isConnected())
-					return;
-				try {
-					PrintWriter writer = new PrintWriter(new BufferedWriter(new OutputStreamWriter(_sock.getOutputStream())));
-					writer.write(channel + ":" + dc +"\n");
-					writer.flush();
-					Log.d("ioio-client", "Sent \"" + channel + ":" + dc + "\"");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			
-			public void run() {
-				while (true) {
-					if (interrupted())
-						break;
-					for (int i = 0; i < 4; i++)
-						if (Math.abs(VideoActivity.axisValues[i] - pastAxisValues[i]) > 0.01)
-							sendSignal(i+1, toDutyCycle(axisValues[i], i+1));
-					try {
-						sleep(20);
-					} catch (InterruptedException e) {
-						break;
-					}
-				}
-			}
-		
-		}
-		*/
+		//sending control data to the pi
 		public class SendSignalThread extends Thread {
 			
 			private float[] pastAxisValues = new float[4];
 			private int pastModeValue = 0;
 		
 			private float toDutyCycle(float axisVal, int channel) {
-				
+				//convert raw shield data to duty cycle equivalent
 				float adjustedValue = 0.0f;
 				float step = 0.0f;
 				float offset = 0.0f;
 				
 				if(channel == 5){
+					//mode
 					pastModeValue = (int)axisVal;
 				}else{
 					pastAxisValues[channel - 1] = axisVal;
@@ -892,6 +816,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 			}
 		
 		}
+		
+		//starts connection to pi for throttle controls
 public class connect extends AsyncTask<String, Void, String> {
 			
 			@Override
@@ -924,6 +850,7 @@ public class connect extends AsyncTask<String, Void, String> {
 
 		}
 
+//used to write json array to desktop app
 	public class saveData extends AsyncTask<String, Void, String> {
 	
 	@Override

@@ -60,6 +60,7 @@ public class ProfileFragment extends Fragment {
         String page = getResources().getStringArray(R.array.pages_array)[i];
         
 
+        //set stock ip/port number into textview
 		_editIp = (EditText) rootView.findViewById(R.id.edit_ip);
 		_editIp.setText("192.168.1.135:9999");
 		
@@ -87,6 +88,7 @@ public class ProfileFragment extends Fragment {
 	
 
 	public void sendMessage(View view) {
+		//pass data to next activity
 	    Intent intent = new Intent(getActivity(), VideoActivity.class);
 	    String message = _editIp.getText().toString();
 	    intent.putExtra("IP", message);

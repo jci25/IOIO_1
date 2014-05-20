@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
 		
 		
 		
-		
+		//incorrect way of using networking on main thread
 		//StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 		//StrictMode.setThreadPolicy(policy); 
 		
@@ -154,14 +154,11 @@ public class MainActivity extends Activity {
     	if(position == 0){
     		fragment = new ProfileFragment();
     	}else if(position == 1){
+    		//may remove settings fragment due to time constraints
     		fragment = new SettingsFragment();
     		//fragment = new FriendsFragment();
     		//args.putString("URL", "http://www.bbc.co.uk/programmes/b006q2x0/features/characters");
-    	}else if(position == 2){
-    		fragment = new SettingsFragment();
-    		//fragment = new FriendsFragment();
-    		//fragment = new SettingsFragment();
-    		
+    	
     	}else{
     		fragment = new ProfileFragment();
     	}
@@ -171,7 +168,7 @@ public class MainActivity extends Activity {
         
         
         //args.putInt(FriendsFragment.ARG_PAGE_NUMBER, position);
-        
+        //how to mange fragments
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();
