@@ -15,7 +15,9 @@ import java.net.URI;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -101,11 +103,11 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	private Socket _sock;	//used to relay shield controls to pi
 	private Thread _th;
 	private RelativeLayout video, plot;
-	private TextView geiger, _mode;
+	private TextView geiger, _maxTemp, _avgTemp;
 	public static int mode = 0;
 	private static String[] modeNames = {"Stabilize", "Alt Hold", "Loiter", "RTL", "Land", "Sport"};
 	public static float[] axisValues = new float[4]; //change to [5] if using left trigger
-	
+	private double[] thermalArray = new double[0];
 	public int[] gamepadAxisIndices = null;
     public float[] gamepadAxisMinVals = null;
     public float[] gamepadAxisMaxVals = null;
@@ -240,8 +242,9 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 		
 		////for IOIO OTG
 		new connect().execute();
-		_mode = (TextView)findViewById(R.id.modeView);
-		_mode.setText( modeNames[mode]);
+		_maxTemp = (TextView)findViewById(R.id.maxTempView);
+		_avgTemp = (TextView)findViewById(R.id.avgTempView);
+
 		mv = (MjpegView) findViewById(R.id.mv);
 		tb = (ProgressBar) findViewById(R.id.throttleBar);
 		new DoRead().execute(path);
@@ -316,8 +319,27 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           	       geigerSeries.addFirst(null, Integer.valueOf(mess[0]));
 	           	    	//geigerSeries.addFirst(null, 2);
 	           	       geigerPlot.redraw();
-	           	       mess = mess[1].split("\t");
-	           	    	LatLng latLng = new LatLng(Float.valueOf(mess[0]), Float.valueOf(mess[1]));
+	           	       String[] mess1 = mess[1].split("\t");
+	           	    	LatLng latLng = new LatLng(Float.valueOf(mess1[0]), Float.valueOf(mess1[1]));
+	           	    	String[] mess2 = mess[2].split(",");
+	           	    	thermalArray = new double[mess2.length];
+	           	    	ArrayList<Double> arStr = new ArrayList<Double>();
+	           	    	for(int i =0; i < mess2.length; i++){
+	           	    		if(mess2[i].equals("NAN")){
+	           	    			mess2[i] = "0";
+	           	    		}
+	           	    		if(Double.parseDouble(mess2[i]) > -10){
+	           	    			arStr.add(Double.parseDouble(mess2[i]));
+	           	    		}
+	           	    		thermalArray[i] = Double.parseDouble(mess2[i]);
+	           	    		
+	           	    		
+	           	    	}
+	           	    	DecimalFormat df = new DecimalFormat("##.##");
+	           	    	_maxTemp.setText("Max Temp: "+df.format((Double.parseDouble(Collections.max(Arrays.asList(mess2)))*1.8+32))+"F");
+	           	    	double sum = 0;
+	           	    	for (double d : arStr) sum += d;
+	           	    	_avgTemp.setText("Avg. Temp: " + df.format(((sum/thermalArray.length)*1.2+32))+"F");
 	           	    	map.getUiSettings().setZoomControlsEnabled(false);
 	           			// Move the camera instantly to hamburg with a zoom of 15.
 	           		 map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
@@ -330,8 +352,8 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           		    // Zoom in, animating the camera.
 	           		   // map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
 	           		try {
-	           			obj1.put("lon", String.valueOf(Float.valueOf(mess[1])));
-	           			obj1.put("lat", String.valueOf(Float.valueOf(mess[0])));
+	           			obj1.put("lon", String.valueOf(Float.valueOf(mess1[1])));
+	           			obj1.put("lat", String.valueOf(Float.valueOf(mess1[0])));
 	           			obj1.put("time_stamp", String.valueOf(c.getTimeInMillis()));
 	           			
 	           			new Thread(new Runnable() {
@@ -359,6 +381,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 	           			    		//System.out.print(e.toString());
 	           			    		try {
 										obj1.put("image", lastHtml);
+										obj1.put("thermalArray", thermalArray);
 									} catch (JSONException e1) {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
@@ -630,7 +653,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 				}
 				
 				System.out.println(mode);
-				_mode.setText(modeNames[mode]);
+				//_mode.setText(modeNames[mode]);
 				ActionBar actionBar = getActionBar();
 				actionBar.setSelectedNavigationItem(mode);
 			}
@@ -639,7 +662,7 @@ public class VideoActivity extends Activity implements OnNavigationListener {
 				mode = (mode + 1) % 6;
 
 				System.out.println(mode);
-				_mode.setText( modeNames[mode]);
+				//_mode.setText( modeNames[mode]);
 				ActionBar actionBar = getActionBar();
 				actionBar.setSelectedNavigationItem(mode);
 			}
@@ -923,7 +946,7 @@ public class connect extends AsyncTask<String, Void, String> {
 		public boolean onNavigationItemSelected(int pos, long id) {
 			// TODO Auto-generated method stub
 			mode = pos;
-			_mode.setText( modeNames[mode]);
+			//_mode.setText( modeNames[mode]);
 			return false;
 		}
 

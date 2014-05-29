@@ -242,24 +242,25 @@ containing a value of this type.
         public static final int selector_list=0x7f020022;
     }
     public static final class id {
-        public static final int Gieger=0x7f050010;
-        public static final int action_save=0x7f05001b;
-        public static final int action_settings=0x7f050019;
-        public static final int action_view=0x7f05001a;
-        public static final int connectB=0x7f050016;
+        public static final int Gieger=0x7f050011;
+        public static final int action_save=0x7f05001c;
+        public static final int action_settings=0x7f05001a;
+        public static final int action_view=0x7f05001b;
+        public static final int avgTempView=0x7f050010;
+        public static final int connectB=0x7f050017;
         public static final int container=0x7f050005;
         public static final int content_frame=0x7f050008;
-        public static final int currRun=0x7f050014;
+        public static final int currRun=0x7f050015;
         public static final int drawer_layout=0x7f050007;
-        public static final int edit_ip=0x7f050017;
-        public static final int geigerPlot=0x7f050012;
-        public static final int graph_lay=0x7f050011;
-        public static final int historyListView=0x7f050013;
+        public static final int edit_ip=0x7f050018;
+        public static final int geigerPlot=0x7f050013;
+        public static final int graph_lay=0x7f050012;
+        public static final int historyListView=0x7f050014;
         public static final int hybrid=0x7f050004;
-        public static final int label=0x7f050018;
+        public static final int label=0x7f050019;
         public static final int left_drawer=0x7f050009;
         public static final int map=0x7f05000e;
-        public static final int modeView=0x7f05000f;
+        public static final int maxTempView=0x7f05000f;
         public static final int mv=0x7f05000c;
         public static final int none=0x7f050000;
         public static final int normal=0x7f050001;
@@ -267,7 +268,7 @@ containing a value of this type.
         public static final int terrain=0x7f050003;
         public static final int textView1=0x7f050006;
         public static final int throttleBar=0x7f05000d;
-        public static final int thumbnail=0x7f050015;
+        public static final int thumbnail=0x7f050016;
         public static final int v1=0x7f05000b;
         public static final int vid_lay=0x7f05000a;
     }
